@@ -3,7 +3,8 @@ import shutil
 import datetime
 import typing as tp
 
-def modification_date(filename: str) -> datetime:
+
+def modification_date(filename: str) -> datetime.datetime:
     t = os.path.getmtime(filename)
     return datetime.datetime.fromtimestamp(t)
 
@@ -13,10 +14,12 @@ def copy_file(dir_from: str, dir_to: str, file_type: str) -> None:
     for cur_file in files:
         if cur_file.endswith('.' + file_type) is True:
             if (os.path.exists(dir_to + '/' + cur_file) is False or
-                    modification_date(dir_to + '/' + cur_file) != modification_date(dir_from + '/' + cur_file)):
+                    modification_date(dir_to + '/' + cur_file) !=
+                    modification_date(dir_from + '/' + cur_file)):
                 if os.path.exists(dir_to + '/' + cur_file):
                     os.remove(dir_to + '/' + cur_file)
-                print('Copy file ' + dir_from + '/' + cur_file + ' last update: ' + modification_date(dir_from + '/' + cur_file).ctime())
+                print('Copy file ' + dir_from + '/' + cur_file +
+                      ' last update: ' + modification_date(dir_from + '/' + cur_file).ctime())
                 if os.path.exists(dir_to + '/' + cur_file) is True:
                     print(modification_date(dir_to + '/' + cur_file))
                 print(modification_date(dir_from + '/' + cur_file))
@@ -37,12 +40,16 @@ def get_all_correct_directories(dir0: str) -> tp.List[str]:
     for lesson in list_lessons:
         lesson = dir0 + '/' + lesson
         if os.path.isdir(lesson):
-            dirs_in_lesson = { dir_in_lesson for dir_in_lesson in os.listdir(lesson) if os.path.isdir(lesson + '/' + dir_in_lesson) }
-            if 'full' in dirs_in_lesson and 'tex' in dirs_in_lesson and 'pdf' in dirs_in_lesson:
+            dirs_in_lesson = {dir_in_lesson for dir_in_lesson in os.listdir(lesson)
+                              if os.path.isdir(lesson + '/' + dir_in_lesson)}
+            if 'full' in dirs_in_lesson and \
+                    'tex' in dirs_in_lesson and \
+                    'pdf' in dirs_in_lesson:
                 correct_directories.append(lesson)
     return correct_directories
 
 
-correct_directories = get_all_correct_directories('Z://study_in_hse') + get_all_correct_directories('Z://study_in_shad')
+correct_directories = get_all_correct_directories('Z://study_in_hse') + \
+                      get_all_correct_directories('Z://study_in_shad')
 for dir in correct_directories:
     copy_from_full(dir)
